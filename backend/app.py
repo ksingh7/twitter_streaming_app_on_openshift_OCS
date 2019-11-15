@@ -254,12 +254,6 @@ api.add_resource(Health, '/Health')
 api.add_resource(SentimentAnalysis, '/SentimentAnalysis')
 api.add_resource(RenderChart2, '/RenderChart2')
 
-'''
-consumer_key = 'Jsvk28SdKXVA5oL4YkHICj9Fg'
-consumer_secret = '31m4HKjlII1rxUlGFiHp31SIYcuMA4cZFMkkGkpssgpPooV9Q4'
-access_token = '217370461-QVccS41AXPJhUxK0EHd9mZmAukiGrcX1JoNfwEkn'
-access_token_secret = 'TVEBV0kzyR5pNPVRaOh0h081weUsO7EyC6rjFvFSam5i9'
-'''
 consumer_key = os.environ['TWTR_CONSUMER_KEY']
 consumer_secret = os.environ['TWTR_CONSUMER_SECRET']
 access_token = os.environ['TWTR_ACCESS_TOKEN']
@@ -270,10 +264,6 @@ auth.set_access_token(access_token, access_token_secret)
 api_twitter = tweepy.API(auth)
 
 # AYLIEN credentials
-'''
-application_id = "83296f38"
-application_key = "7c482259283d21fe123bbe2b216ca30f"
-'''
 application_id = os.environ['AYLIEN_APP_ID']
 application_key = os.environ['AYLIEN_APP_KEY']
 
