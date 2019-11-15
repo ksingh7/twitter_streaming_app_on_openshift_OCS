@@ -1,3 +1,9 @@
+## Pre-Pre-requisite
+
+1. Register for a [developer account](https://developer.twitter.com/) on twitter and get your API keys. This will be required for this demo
+2. Register for Aylien [developer account](https://developer.aylien.com/text-api-demo) and grab your API keys. This will be required for this demo 
+
+
 ## Pre-requisite
 
 1. Verify OCS cluster status from dashboard
@@ -44,8 +50,8 @@ watch oc get all,csv
 3. Git clone application repository
 
 ```
-git clone
-cd 
+git clone https://github.com/ksingh7/twitter_streaming_app_on_openshift_OCS.git
+cd twitter_streaming_app_on_openshift_OCS
 ```
 
 4. Verify there are no PV,PVC exist on OCS
