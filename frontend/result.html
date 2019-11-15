@@ -1,0 +1,274 @@
+<html>
+
+<head>
+    <title>Kafka Demo</title>
+    <link rel="stylesheet" href="index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
+        integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!--  <button id='TwitterToKafka' onclick="TwitterToKafka()">Twitter To Kafka</button> -->
+
+    <div class="twoToneCenter">
+    </div>
+
+    <button id='TwitterToKafka' onclick="TwitterToKafka()">
+        <h2>Twitter to Kafka</h2>
+    </button>
+    <button id='KafkaToMongoDB' onclick="KafkaToMongoLoop()">
+        <h2>Kafka to MongoDB</h2>
+    </button>
+    <button id='SentimentAnalysis' onclick="SentimentAnalysis()">
+        <h2>Sentiment Analysis</h2>
+    </button>
+    <button id='RenderChart' onclick="renderChart()">
+        <h2>Render Chart</h2>
+    </button>
+    <button id='RenderChart2' onclick="renderStackedChart()">
+        <h2>Sentiment Analysis Chart</h2>
+    </button>
+    <!-- <button id='StopRendering' onclick="stopChartRendering()">
+        <h2>Stop Rendering</h2>
+    </button> -->
+
+
+    <br><br><br>
+    <div id="container" style="width: 50%;">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="container" style="width: 50%;">
+        <canvas id="Stackchart"></canvas>
+    </div>
+
+</body>
+<script>
+    var urlParams = new URLSearchParams(location.search);
+    var keyword = urlParams.get('keyword');
+    keyword = keyword.split(',')
+    var keywordString = ''
+    for (let i = 0; i < keyword.length; i++) {
+        if (i === 0) {
+            keywordString = `?keyword=${keyword[i].trim()}`
+        } else {
+            keywordString += `&keyword=${keyword[i].trim()}`
+        }
+    }
+    console.log(keywordString)
+    var topic = urlParams.get('topic');
+    //document.write(keyword);
+    //document.write(topic);
+    var url = 'http://backend-amq-streams.apps.perf3.ocs.lab.eng.blr.redhat.com'
+    var color = Chart.helpers.color
+    var interval
+
+    var barChartData = {
+        labels: [],
+        datasets: [{
+            label: 'Occurence of Keywords',
+            backgroundColor: color('#ff0000').alpha(0.5).rgbString(),
+            borderColor: '#ccc',
+            borderWidth: 1,
+            barPercentage: 0.5,
+            barThickness: 2,
+            maxBarThickness: 4,
+            minBarLength: 1,
+            data: []
+        }]
+    };
+
+    // Stacked Graph
+    var stackChartData = {
+        data: {
+            labels: ['Risk Level'],
+            datasets: [
+                {
+                    label: 'Low',
+                    data: [67.8],
+                    backgroundColor: '#D6E9C6',
+                },
+                {
+                    label: 'Moderate',
+                    data: [20.7],
+                    backgroundColor: '#FAEBCC',
+                },
+                {
+                    label: 'High',
+                    data: [11.4],
+                    backgroundColor: '#EBCCD1',
+                }
+            ]
+        }
+    };
+
+    function TwitterToKafka() {
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/TwitterToKafka${keywordString}&topic=${topic}`, true);
+        xml.onload = function (event) {
+            console.log(event);
+        };
+        xml.send()
+    }
+
+    function SentimentAnalysis() {
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/SentimentAnalysis${keywordString}&topic=${topic}`, true);
+        xml.onload = function (event) {
+            console.log(event);
+        };
+        xml.send()
+    }
+
+    function KafkaToMongoLoop() {
+        KafkaToMongo()
+        interval = setInterval(function () {
+            KafkaToMongo()
+        }, 10000)
+    }    
+
+    function KafkaToMongo() {
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/KafkaToMongoDB${keywordString}&topic=${topic}`, true);
+        xml.onload = function (event) {
+            console.log(event);
+        };
+        xml.send()
+    }
+    /*
+    function TwitterToKafka() {
+        var twoToneButton = document.querySelector('.twoToneButton');
+        twoToneButton.addEventListener("click", function() {
+        twoToneButton.innerHTML = "Fetching Tweets";
+        twoToneButton.classList.add('spinning');
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/TwitterToKafka`, true);
+        xml.onload = function (event) {
+            console.log(event);
+        };
+        xml.send()
+        /*setTimeout( 
+            function  (){  
+                twoToneButton.classList.remove('spinning');
+                twoToneButton.innerHTML = "Sign In";
+                
+            }, 6000); 
+    }, false); */
+    /*    
+        function KafkaToMongo() {
+            var twoToneButton = document.querySelector('.twoToneButton');
+            twoToneButton.addEventListener("click", function() {
+            twoToneButton.innerHTML = "Ingesting data to MongoDB";
+            twoToneButton.classList.add('spinning');
+            let xml = new XMLHttpRequest()
+            xml.open("GET", `${url}/KafkaToMongoDB`, true);
+            xml.onload = function (Event) {
+                console.log(event);
+            };
+            xml.send()
+        }, false);
+    }; */
+
+    function renderStackedChart() {
+        sentimentAnalysisRendering()
+        interval = setInterval(function () {
+            sentimentAnalysisRendering()
+        }, 5000)
+    }
+
+    function renderChart() {
+        kafkaMongoRendering()
+        interval = setInterval(function () {
+            kafkaMongoRendering()
+        }, 5000)
+    }
+
+    function sentimentAnalysisRendering() {
+        let response = {}
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/RenderChart2${keywordString}&topic=${topic}`, true);
+        xml.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                response = JSON.parse(this.responseText)
+                stackChartData = response
+                //stackChartData.datasets[0].data = response.values
+                var ctx = document.getElementById('Stackchart').getContext('2d');
+                window.myBar2 = new Chart(ctx, {
+                    type: 'bar',
+                    data: stackChartData,
+                    options: {
+                        scales: {
+                            xAxes: [{ stacked: true }],
+                            yAxes: [{ stacked: true }]
+                        },
+                        responsive: true,
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Sentiment Tweet Analysis'
+                        }
+                    }
+                });
+            }
+        }
+        xml.send()
+    }
+
+    function kafkaMongoRendering() {
+        let response = {}
+        let xml = new XMLHttpRequest()
+        xml.open("GET", `${url}/RenderChart1${keywordString}&topic=${topic}`, true);
+        xml.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                response = JSON.parse(this.responseText)
+                barChartData.labels = response.labels
+                barChartData.datasets[0].data = response.values
+                var ctx = document.getElementById('canvas').getContext('2d');
+                window.myBar = new Chart(ctx, {
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tweet Analysis'
+                        }
+                    }
+                });
+            }
+        }
+        xml.send()
+    }
+
+    function stopChartRendering() {
+        clearInterval(interval)
+    }
+
+    window.onload = function () {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Tweet Analysis'
+                }
+            }
+        });
+    }
+
+
+</script>
+
+</html>

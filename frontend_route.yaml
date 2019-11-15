@@ -1,0 +1,25 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: "2019-11-14T05:09:59Z"
+  labels:
+    app: frontend
+  name: frontend
+  namespace: amq-streams
+  resourceVersion: "21407587"
+  selfLink: /apis/route.openshift.io/v1/namespaces/amq-streams/routes/frontend
+  uid: 01ddcbdc-069d-11ea-a5da-0a580a80001f
+spec:
+  host: frontend-amq-streams.apps.ocp42.ceph-s3.com
+  port:
+    targetPort: 80-tcp
+  subdomain: ""
+  to:
+    kind: Service
+    name: frontend
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress: null

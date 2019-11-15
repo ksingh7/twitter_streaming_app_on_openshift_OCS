@@ -1,0 +1,130 @@
+apiVersion: v1
+items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: backend
+    name: backend
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: karansingh/kafka-demo-backend-service
+      from:
+        kind: DockerImage
+        name: karansingh/kafka-demo-backend-service
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: backend
+    name: backend
+  spec:
+    replicas: 1
+    selector:
+      app: backend
+      deploymentconfig: backend
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: backend
+          deploymentconfig: backend
+      spec:
+        containers:
+        - env:
+          - name: AYLIEN_APP_ID
+            value: 83296f38
+          - name: AYLIEN_APP_KEY
+            value: 7c482259283d21fe123bbe2b216ca30f
+          - name: IS_KAFKA_SSL
+            value: "False"
+          - name: KAFKA_BOOTSTRAP_ENDPOINT
+            value: cluster-kafka-bootstrap:9092
+          - name: KAFKA_TOPIC
+            value: topic1
+          - name: MONGODB_DB_NAME
+            value: twitter_stream
+          - name: MONGODB_ENDPOINT
+            value: mongodb:27017
+          - name: MONGODB_HOST
+            value: mongodb
+          - name: MONGODB_PASSWORD
+            value: demo
+          - name: MONGODB_PORT
+            value: "27017"
+          - name: MONGODB_USER
+            value: demo
+          - name: TWTR_ACCESS_TOKEN
+            value: 217370461-QVccS41AXPJhUxK0EHd9mZmAukiGrcX1JoNfwEkn
+          - name: TWTR_ACCESS_TOKEN_SECRET
+            value: TVEBV0kzyR5pNPVRaOh0h081weUsO7EyC6rjFvFSam5i9
+          - name: TWTR_CONSUMER_KEY
+            value: Jsvk28SdKXVA5oL4YkHICj9Fg
+          - name: TWTR_CONSUMER_SECRET
+            value: 31m4HKjlII1rxUlGFiHp31SIYcuMA4cZFMkkGkpssgpPooV9Q4
+          image: karansingh/kafka-demo-backend-service
+          name: backend
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - backend
+        from:
+          kind: ImageStreamTag
+          name: backend:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: backend
+    name: backend
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: backend
+      deploymentconfig: backend
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
