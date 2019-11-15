@@ -139,7 +139,7 @@ oc adm policy add-scc-to-user anyuid -z default
 2. Deploy backend API APP
 
 ```
-oc new-app --name=backend --docker-image=karansingh/kafka-demo-backend-service --env IS_KAFKA_SSL='False' --env MONGODB_ENDPOINT='mongodb:27017' --env KAFKA_BOOTSTRAP_ENDPOINT='cluster-kafka-bootstrap:9092' --env 'KAFKA_TOPIC=topic1' --env AYLIEN_APP_ID='83296f38' --env AYLIEN_APP_KEY='7c482259283d21fe123bbe2b216ca30f' --env TWTR_CONSUMER_KEY='Jsvk28SdKXVA5oL4YkHICj9Fg' --env TWTR_CONSUMER_SECRET='31m4HKjlII1rxUlGFiHp31SIYcuMA4cZFMkkGkpssgpPooV9Q4' --env TWTR_ACCESS_TOKEN='217370461-QVccS41AXPJhUxK0EHd9mZmAukiGrcX1JoNfwEkn' --env TWTR_ACCESS_TOKEN_SECRET='TVEBV0kzyR5pNPVRaOh0h081weUsO7EyC6rjFvFSam5i9' --env MONGODB_HOST='mongodb' --env MONGODB_PORT=27017 --env MONGODB_USER='demo' --env MONGODB_PASSWORD='demo' --env MONGODB_DB_NAME='twitter_stream' -o yaml > backend.yaml
+oc new-app --name=backend --docker-image=karansingh/kafka-demo-backend-service --env IS_KAFKA_SSL='False' --env MONGODB_ENDPOINT='mongodb:27017' --env KAFKA_BOOTSTRAP_ENDPOINT='cluster-kafka-bootstrap:9092' --env 'KAFKA_TOPIC=topic1' --env AYLIEN_APP_ID='YOUR_KEY_HERE' --env AYLIEN_APP_KEY='YOUR_KEY_HERE' --env TWTR_CONSUMER_KEY='YOUR_KEY_HERE' --env TWTR_CONSUMER_SECRET='YOUR_KEY_HERE' --env TWTR_ACCESS_TOKEN='YOUR_KEY_HERE' --env TWTR_ACCESS_TOKEN_SECRET='YOUR_KEY_HERE' --env MONGODB_HOST='mongodb' --env MONGODB_PORT=27017 --env MONGODB_USER='demo' --env MONGODB_PASSWORD='demo' --env MONGODB_DB_NAME='twitter_stream' -o yaml > backend.yaml
 ```
 ```
 oc apply -f backend.yaml ; oc expose svc/backend

@@ -53,9 +53,9 @@ items:
         containers:
         - env:
           - name: AYLIEN_APP_ID
-            value: 83296f38
+            value: YOUR_KEY_HERE
           - name: AYLIEN_APP_KEY
-            value: 7c482259283d21fe123bbe2b216ca30f
+            value: YOUR_KEY_HERE
           - name: IS_KAFKA_SSL
             value: "False"
           - name: KAFKA_BOOTSTRAP_ENDPOINT
@@ -75,13 +75,13 @@ items:
           - name: MONGODB_USER
             value: demo
           - name: TWTR_ACCESS_TOKEN
-            value: 217370461-QVccS41AXPJhUxK0EHd9mZmAukiGrcX1JoNfwEkn
+            value: YOUR_KEY_HERE
           - name: TWTR_ACCESS_TOKEN_SECRET
-            value: TVEBV0kzyR5pNPVRaOh0h081weUsO7EyC6rjFvFSam5i9
+            value: YOUR_KEY_HERE
           - name: TWTR_CONSUMER_KEY
-            value: Jsvk28SdKXVA5oL4YkHICj9Fg
+            value: YOUR_KEY_HERE
           - name: TWTR_CONSUMER_SECRET
-            value: 31m4HKjlII1rxUlGFiHp31SIYcuMA4cZFMkkGkpssgpPooV9Q4
+            value: YOUR_KEY_HERE
           image: karansingh/kafka-demo-backend-service
           name: backend
           ports:
