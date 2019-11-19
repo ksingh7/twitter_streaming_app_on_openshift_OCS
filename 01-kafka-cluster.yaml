@@ -4,7 +4,7 @@ metadata:
   name: cluster
   namespace: amq-streams
   labels:
-    app: twitter-demo
+    app: demo
 spec:
   kafka:
     version: 2.2.1
@@ -16,14 +16,14 @@ spec:
         type: route
         overrides:
           bootstrap:
-            host: cluster-kafka-bootstrap-twitter-demo.apps.perf3.ocs.lab.eng.blr.redhat.com
+            host: cluster-kafka-bootstrap-demo.apps.ocp42.ceph-s3.com
         brokers:
         - broker: 0
-          host: cluster-kafka-0-twitter-demo.apps.perf3.ocs.lab.eng.blr.redhat.com
+          host: cluster-kafka-0-demo.apps.ocp42.ceph-s3.com
         - broker: 1
-          host: cluster-kafka-1-twitter-demo.apps.perf3.ocs.lab.eng.blr.redhat.com
+          host: cluster-kafka-1-demo.apps.ocp42.ceph-s3.com
         - broker: 2
-          host: cluster-kafka-2-twitter-demo.apps.perf3.ocs.lab.eng.blr.redhat.com
+          host: cluster-kafka-2-demo.apps.ocp42.ceph-s3.com
           #        tls: true
 #        authentication:
 #          type: tls      

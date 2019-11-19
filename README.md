@@ -142,7 +142,7 @@ oc adm policy add-scc-to-user anyuid -z default
 oc new-app --name=backend --docker-image=karansingh/kafka-demo-backend-service --env IS_KAFKA_SSL='False' --env MONGODB_ENDPOINT='mongodb:27017' --env KAFKA_BOOTSTRAP_ENDPOINT='cluster-kafka-bootstrap:9092' --env 'KAFKA_TOPIC=topic1' --env AYLIEN_APP_ID='YOUR_KEY_HERE' --env AYLIEN_APP_KEY='YOUR_KEY_HERE' --env TWTR_CONSUMER_KEY='YOUR_KEY_HERE' --env TWTR_CONSUMER_SECRET='YOUR_KEY_HERE' --env TWTR_ACCESS_TOKEN='YOUR_KEY_HERE' --env TWTR_ACCESS_TOKEN_SECRET='YOUR_KEY_HERE' --env MONGODB_HOST='mongodb' --env MONGODB_PORT=27017 --env MONGODB_USER='demo' --env MONGODB_PASSWORD='demo' --env MONGODB_DB_NAME='twitter_stream' -o yaml > backend.yaml
 ```
 ```
-oc apply -f backend.yaml ; oc expose svc/backend
+oc apply -f 06-backend.yaml ; oc expose svc/backend
 
 ```
 
@@ -161,7 +161,7 @@ oc logs -f $(oc get po --selector app=backend --no-headers | awk '{print $1}')
 oc get route backend --no-headers | awk '{print $2}'
 ```
 
-2. Edit results.html and update route
+2. Edit results.html, Line-62 ``var url`` and update route
 
 3. Build Frontend Docker image
 

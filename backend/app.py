@@ -8,8 +8,11 @@ from kafka import KafkaConsumer
 from kafka import KafkaProducer
 from pymongo import MongoClient
 import bson
+from bson.objectid import ObjectId
 from aylienapiclient import textapi
 import os
+import re
+import random
 
 #from kafka import KafkaAdminClient, NewTopic
 #from confluent_kafka.admin import AdminClient, NewTopic
@@ -93,10 +96,11 @@ class kafka_to_mongodb(Resource):
         parser.add_argument('keyword', action='append')
         # parser.add_argument('topic')
         args = parser.parse_args()
-        print('args', args['keyword'])
+        #print('args', args['keyword'])
         #print('args', args['topic'])
         # args['topic']
         global track_keywords
+        db_item = {}
         #global kafka_topic
         if args['keyword'] is not None:
             track_keywords = args['keyword']
@@ -110,15 +114,29 @@ class kafka_to_mongodb(Resource):
         for message in consumer:
             message = message.value
             tidy_tweet = message['tweet'].strip().encode('ascii', 'ignore')
-            if len(tidy_tweet) == 0:
+            #print(message)
+            if len(tidy_tweet) <= 5:
                 break
-            if tidy_tweet[0:4] == "http":
-                break
+            #print(tidy_tweet[0:4])
+            #if len((re.findall('http',tidy_tweet)) > 0:
+            #        print tidy_tweet
+            #        print("After http")            
+            #if tidy_tweet[0:4] == "http":
+            #    break
+            for keyword in track_keywords:
+                if len(re.findall(keyword,tidy_tweet)) > 0:
+                    db_item['_id'] = ObjectId()
+                    db_item['keyword'] = keyword
+                    db_item['tweet'] = tidy_tweet
+                    #tidy_tweet.update({'keyword': keyword})
+                    collection.insert_one(db_item)
+                    countDocsWritten = countDocsWritten + 1
+                    print('\nWritten %d documents to MongoDb' % (countDocsWritten))
+                    print(db_item)            
             # if tidy_tweet.find(count):
             #response = client.Sentiment({'text': tidy_tweet})
-            collection.insert_one(message)
-            countDocsWritten = countDocsWritten + 1
-            print('\nWritten %d documents to MongoDb' % (countDocsWritten))
+            #collection.insert_one(message)
+
 
 
 class RenderChart1(Resource):
@@ -140,14 +158,14 @@ class RenderChart1(Resource):
             count = collection.find(
                 {"tweet": {"$regex": keyword, "$options": "gim"}}).count()
             data["values"].append(count)
-            print(data)  # Here is the problem
+            #print(data)  # Here is the problem
         return data
 
 
 class RenderChart2(Resource):
     def get(self):
         #db = mongoclient[mongodb_db_name]
-        collection = mongoclient[mongodb_db_name]['sentiments']
+        collection = mongoclient[mongodb_db_name][mongodb_collection_name]
         data = {}
         parser.add_argument('keyword', action='append')
         args = parser.parse_args()
@@ -184,7 +202,7 @@ class RenderChart2(Resource):
                 # print(count)
                 data["datasets"][sentiCount]["data"].append(count)
                 # print(data) ## Here is the problem
-        print(data)
+        #print(data)
         return data
 
 
@@ -192,7 +210,7 @@ class Health(Resource):
     def get(self):
         return "Health_OK"
 
-
+'''
 class SentimentAnalysis(Resource):
     def get(self):
         countDocsWritten = 0
@@ -222,6 +240,22 @@ class SentimentAnalysis(Resource):
 
                     # self.sentiment_process(count)
 '''
+class SentimentAnalysis(Resource):
+    def get(self):
+        #countDocsWritten = 0
+        collection = mongoclient[mongodb_db_name][mongodb_collection_name]
+        for count in range(1,collection.count()):
+            record = collection.find().limit(-1).skip(random.randint(1,collection.count())).next()   
+            sentiment_analysis_result = client.Sentiment({'text': record['tweet']})
+            #print(sentiment_analysis_result)
+            #record.update({'polarity': sentiment_analysis_result['polarity']})
+            collection.update_one({'_id':record['_id']},{ "$set" : {'polarity': sentiment_analysis_result['polarity'] } })
+            print(record)
+
+
+
+
+'''
     def sentiment_process(self, query):
         #number = 2
         collection = mongoclient[mongodb_db_name]['sentiments']
@@ -245,7 +279,8 @@ class SentimentAnalysis(Resource):
             countDocsWritten = countDocsWritten + 1
             print('\nWritten %d th record' % (countDocsWritten))
             print("Analyzed Tweet {}".format(c))
-        return True'''
+        return True
+'''
 
 api.add_resource(twitter_to_kafka, '/TwitterToKafka')
 api.add_resource(kafka_to_mongodb, '/KafkaToMongoDB')
@@ -295,7 +330,7 @@ mongodb_password = os.environ['MONGODB_PASSWORD']
 mongodb_db_name = os.environ['MONGODB_DB_NAME']
 
 mongodb_collection_name = 'twitter_collection'
-
+#mongoclient = MongoClient("localhost:27017")
 mongoclient = MongoClient(host=mongodb_host,port=mongodb_port,username=mongodb_user,password=mongodb_password,authSource=mongodb_db_name)
 db = mongoclient[mongodb_db_name]
 collection = mongoclient[mongodb_db_name][mongodb_collection_name]
@@ -317,8 +352,10 @@ if ssl == 'True' :
         ssl_cafile=ssl_cafile,
         ssl_keyfile=ssl_keyfile,
         auto_offset_reset='earliest',
+        group_id='consumer_group_1',
         enable_auto_commit=True,
         value_deserializer=lambda x: loads(x.decode('utf-8')))
+    '''
     sentimentConsumer = KafkaConsumer(
         kafka_topic,
         bootstrap_servers=bootstrap_servers,
@@ -328,6 +365,7 @@ if ssl == 'True' :
         auto_offset_reset='earliest',
         enable_auto_commit=True,
         value_deserializer=lambda x: loads(x.decode('utf-8')))
+        '''
 elif ssl == 'False':
     producer = KafkaProducer(
         bootstrap_servers=bootstrap_servers,
@@ -336,14 +374,17 @@ elif ssl == 'False':
         kafka_topic,
         bootstrap_servers=bootstrap_servers,
         auto_offset_reset='earliest',
+        group_id='consumer_group_1',
         enable_auto_commit=True,
         value_deserializer=lambda x: loads(x.decode('utf-8')))
+    '''
     sentimentConsumer = KafkaConsumer(
         kafka_topic,
         bootstrap_servers=bootstrap_servers,
         auto_offset_reset='earliest',
         enable_auto_commit=True,
         value_deserializer=lambda x: loads(x.decode('utf-8')))
+        '''
 
 '''
 KafkaClient = KafkaAdminClient(

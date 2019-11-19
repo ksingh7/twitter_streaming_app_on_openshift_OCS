@@ -17,7 +17,7 @@
     <button id='TwitterToKafka' onclick="TwitterToKafka()">
         <h2>Twitter to Kafka</h2>
     </button>
-    <button id='KafkaToMongoDB' onclick="KafkaToMongoLoop()">
+    <button id='KafkaToMongoDB' onclick="KafkaToMongo()">
         <h2>Kafka to MongoDB</h2>
     </button>
     <button id='SentimentAnalysis' onclick="SentimentAnalysis()">
@@ -60,7 +60,8 @@
     var topic = urlParams.get('topic');
     //document.write(keyword);
     //document.write(topic);
-    var url = 'http://backend-amq-streams.apps.perf3.ocs.lab.eng.blr.redhat.com'
+    var url = 'http://backend-amq-streams.apps.ocp42.ceph-s3.com'
+    //var url = 'http://localhost:8080'
     var color = Chart.helpers.color
     var interval
 
@@ -208,7 +209,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Sentiment Tweet Analysis'
+                            text: 'Sentiment Analysis of Tweets'
                         }
                     }
                 });
@@ -237,7 +238,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Tweet Analysis'
+                            text: 'Tweets Keyword Counter'
                         }
                     }
                 });
@@ -262,7 +263,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Tweet Analysis'
+                    text: 'Tweets Keyword Counter'
                 }
             }
         });
