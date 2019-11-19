@@ -198,4 +198,28 @@ docker push karansingh/kafka-demo-frontend-service
 oc new-app --name=frontend --docker-image=karansingh/kafka-demo-frontend-service:latest ; oc expose svc/frontend ; oc get route frontend
 ```
 
+# Miscellaneous Command Set (notes to myself)
 
+- Deleting App
+```
+oc delete all --selector app=backend
+oc delete all --selector app=frontend
+oc delete all --selector app=mongodb ; oc delete svc/mongodb ; oc delete secret/mongodb ; oc delete pvc/mongodb
+oc adm policy remove-scc-from-user anyuid system:serviceaccount:amq-streams:default
+```
+- Local Docker setup
+```
+docker run -p 27017:27017 -d --mount type=bind,source=$PWD/data/bin,destination=/data/bin --name mongo mongo
+docker exec -it mongo /bin/bash
+mongo
+```
+- Create a User with Password (demo:demo)
+- Create a db and add document in a collection (sampledb)
+
+```
+docker run -d --rm  --name backend --link mongo -p 8080:8080 --env IS_KAFKA_SSL='True' --env MONGODB_ENDPOINT='mongo:27017' --env KAFKA_BOOTSTRAP_ENDPOINT='cluster-kafka-bootstrap-twitter-demo.apps.ocp42.ceph-s3.com:443' --env 'KAFKA_TOPIC=topic1' --env AYLIEN_APP_ID='SECRET' --env AYLIEN_APP_KEY='SECRET' --env TWTR_CONSUMER_KEY='SECRET' --env TWTR_CONSUMER_SECRET='SECRETa' --env TWTR_ACCESS_TOKEN='SECRET' --env TWTR_ACCESS_TOKEN_SECRET='SECRET' --env MONGODB_HOST='mongo' --env MONGODB_PORT=27017 --env MONGODB_USER='demo' --env MONGODB_PASSWORD='demo' --env MONGODB_DB_NAME='sampledb' karansingh/kafka-demo-backend-service
+```
+```
+docker run -p 80:80 -d --rm --name frontend  --link backend  karansingh/kafka-demo-frontend-service
+
+```
