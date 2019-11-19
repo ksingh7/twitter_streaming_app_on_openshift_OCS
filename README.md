@@ -8,7 +8,7 @@ Follow this demo hands-on-exercise to deploy a ``Twitter Streaming and Sentiment
 ![](img/intro-4.png)
 ![](img/intro-5.png)
 
-- Once you follow the demo the output should look like this
+## Once you follow the demo the output should look like this
 
 ![](img/demo-1.png)
 ![](img/demo-2.jpg)
