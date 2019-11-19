@@ -6,6 +6,7 @@ Follow this demo hands-on-exercise to deploy a ``Twitter Streaming and Sentiment
 ![](img/intro-2.png)
 ![](img/intro-3.png)
 ![](img/intro-4.png)
+![](img/intro-5.png)
 
 - Once you follow the demo the output should look like this
 
@@ -14,7 +15,6 @@ Follow this demo hands-on-exercise to deploy a ``Twitter Streaming and Sentiment
 ![](img/demo-3.png)
 ![](img/demo-4.png)
 
-![](img/intro-5.png)
 # Instructions
 
 ## Pre-Pre-requisite
